@@ -1,0 +1,59 @@
+{
+    "name": "hlfv1",
+    "x-type": "hlfv1",
+    "x-commitTimeout": 1000,
+    "version": "1.0.0",
+    "client": {
+        "organization": "Enerjisa",
+        "connection": {
+            "timeout": {
+                "peer": {
+                    "endorser": "1000",
+                    "eventHub": "1000",
+                    "eventReg": "1000"
+                },
+                "orderer": "1000"
+            }
+        }
+    },
+    "channels": {
+        "energychannel": {
+            "orderers": [
+                "orderer.energy.com"
+            ],
+            "peers": {
+                "enerjisa-peer1": {},
+                "enerjisa-peer2": {},
+                "aydem-peer1": {}
+            }
+        }
+    },
+    "organizations": {
+        "Enerjisa": {
+            "mspid": "EnerjisaMSP",
+            "peers": [
+                "enerjisa-peer1"
+            ],
+            "certificateAuthorities": [
+                "ca.server.com"
+            ]
+        }
+    },
+    "orderers": {
+        "orderer.energy.com": {
+            "url": "grpc://localhost:7050"
+        }
+    },
+    "peers": {
+        "enerjisa-peer1": {
+            "url": "grpc://localhost:7051",
+            "eventUrl": "grpc://localhost:7051"
+        }
+    },
+    "certificateAuthorities": {
+        "ca.server.com": {
+            "caName": "ca.server.com",
+            "url": "http://localhost:7054"
+        }
+    }
+}

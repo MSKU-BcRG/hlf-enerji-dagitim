@@ -1,0 +1,41 @@
+# List all Peer orgaznizations
+organizations:
+  enerjisa:
+    peers:
+      - enerjisa-peer1:
+          url: grpc://localhost:7051
+          eventUrl: grpc://localhost:7051
+  aydem:
+    peers:
+      - aydem-peer1:
+          url: grpc://localhost:9051
+          eventUrl: grpc://localhost:9051
+  kamukurumu:
+    peers:
+      - kamukurumu-peer1:
+          url: grpc://localhost:6051
+          eventUrl: grpc://localhost:6051
+# List the orderer URL
+orderers:
+  orderer.energy.com:
+      url: grpc://localhost:7050
+# List teh CA 
+ca:
+  name: ca.server.com
+  url: http://localhost:7054
+
+# List the application channels 
+channels:
+  enerjisachannel:
+    orderers:
+      - orderer.energy.com
+    peers:
+      enerjisa-peer1:
+      kamukurumu-peer1:
+  aydemchannel:
+    orderers:
+      - orderer.energy.com
+    peers:
+      aydem-peer1:
+      kamukurumu-peer1:
+
