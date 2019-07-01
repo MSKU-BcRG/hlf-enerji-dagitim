@@ -1,0 +1,12 @@
+version: '2'
+
+services:
+   fabric_ca:
+      container_name: fabric-ca
+      image: hyperledger/fabric-ca:latest
+      volumes:
+         - "./fabric-ca-server/:/fabric-ca-server"
+      command:
+         - /fabric-ca-server/gen-fabric-ca-docker.sh
+      tty: true
+
