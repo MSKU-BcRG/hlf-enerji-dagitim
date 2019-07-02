@@ -1,6 +1,8 @@
 #!/bin/bash
 
 
+killall fabric-ca-server  2> /dev/null
+killall peer
 rm -rf ./fabric-ca/*
 rm -rf ./blockchain/*
 rm -rf ./artifacts/*

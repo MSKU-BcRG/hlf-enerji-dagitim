@@ -33,7 +33,7 @@ General:
     LocalMSPID: OrdererMSP
 
     # Listen address: The IP on which to bind to listen.
-    ListenAddress: 0.0.0.0
+    ListenAddress: 10.5.10.10
 
     # Listen port: The port on which to bind to listen.
     ListenPort: 7050
@@ -81,7 +81,7 @@ FileLedger:
     # Location: The directory to store the blocks in.
     # Windows - if you get a LevelDb error in launching orderer use the VM file 
     # by uncommenting the following line - comment the Location: ./ledger 
-    Location: ./blockchain/ledger
+    Location: /hlf-enerji/blockchain/ledger
     # Location: ./ledger
 
     # The prefix to use when generating a ledger directory in temporary space.

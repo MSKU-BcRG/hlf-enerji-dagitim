@@ -5,6 +5,26 @@ setenv(){
     export FABRIC_CA_CLIENT_HOME=/hlf-enerji/fabric-ca/client/$1/$2
     export FABRIC_CA_SERVER_HOME=/hlf-enerji/fabric-ca/server/$1/$2
 }
+createId(){
+    ORG=$1
+	USERNAME=$2
+	PASSWORD="pwd"
+	PORT="7054"
+	HOST="10.5.10.5"
+    export FABRIC_CA_CLIENT_HOME=/hlf-enerji/fabric-ca/client/$ORG/admin
+	echo "Peer Register Starting..."
+	fabric-ca-client register --id.type peer --id.name $USERNAME --id.secret $PASSWORD --id.affiliation $ORG
+	echo "Peer Register Completed with "$USERNAME
+	export FABRIC_CA_CLIENT_HOME=/hlf-enerji/fabric-ca/client/$ORG/$USERNAME
+	echo http://$USERNAME:$PASSWORD@$HOST:$PORT
+	echo $FABRIC_CA_CLIENT_HOME
+	fabric-ca-client enroll -u http://$USERNAME:$PASSWORD@$HOST:$PORT
+	echo "Peer Enrolled on "$HOST:$PORT
+	mkdir -p $FABRIC_CA_CLIENT_HOME/msp/admincerts
+	cp /hlf-enerji/fabric-ca/client/$ORG/admin/msp/signcerts/* $FABRIC_CA_CLIENT_HOME/msp/admincerts
+}
+source /hlf-enerji/removeEverything.sh
+
 
 killall fabric-ca-server  2> /dev/null
 #----------------------------------------------------------
@@ -20,7 +40,7 @@ export FABRIC_CA_CLIENT_HOME=/hlf-enerji/fabric-ca/client
 export FABRIC_CA_SERVER_HOME=/hlf-enerji/fabric-ca/server
 mkdir -p $FABRIC_CA_SERVER_HOME
 #Initializing the CA Server
-fabric-ca-server init -b admin:pwd -n ca.localhost.com
+fabric-ca-server init -b admin:pwd -n 10.5.10.5
 # Config Path -- Maybe Later
 DEFAULT_CLIENT_CONFIG_YAML=/hlf-enerji/config/fabric-ca-server-config.yaml
 # Set Path for Client
@@ -31,14 +51,14 @@ cp $DEFAULT_CLIENT_CONFIG_YAML  "/hlf-enerji/fabric-ca/server/"
 #----------------------------------------------------------
 #   Launch
 
-echo 'Launching network on ca.server.com'
+echo 'Launching network on 10.5.10.5'
 
 # # Set the location
 # export FABRIC_CA_SERVER_HOME=/hlf-enerji/fabric-ca/server
 # export FABRIC_CA_CLIENT_HOME=/hlf-enerji/fabric-ca/client
 
 # Launch network
-fabric-ca-server -n ca.server.com -p 7054 start &
+fabric-ca-server -n 10.5.10.5 -p 7054 start &
 
 sleep 5
 
@@ -55,7 +75,7 @@ export FABRIC_CA_CLIENT_HOME=/hlf-enerji/fabric-ca/client/caserver/admin
 mkdir -p $FABRIC_CA_CLIENT_HOME
 cp $DEFAULT_CLIENT_CONFIG_YAML  "$FABRIC_CA_CLIENT_HOME/"
 # enroll ca admin 
-fabric-ca-client enroll -u http://admin:pwd@localhost:7054
+fabric-ca-client enroll -u http://admin:pwd@10.5.10.5:7054
 echo "For Checking Identity"
 fabric-ca-client identity list
 
@@ -94,7 +114,7 @@ echo "Register Process Over"
 echo "Enrolling Process for Admins"
 # Enroll the orderer-admin identity
 setenv orderer admin
-fabric-ca-client enroll -u http://orderer-admin:pwd@localhost:7054
+fabric-ca-client enroll -u http://orderer-admin:pwd@10.5.10.5:7054
 echo "orderer-admin Enrolled!"
 # Setup MSP 
 mkdir -p $FABRIC_CA_CLIENT_HOME/msp/admincerts
@@ -103,7 +123,7 @@ cp $FABRIC_CA_CLIENT_HOME/../../caserver/admin/msp/signcerts/*  $FABRIC_CA_CLIEN
 
 # Enroll the enerjisa-admin identity
 setenv enerjisa admin
-fabric-ca-client enroll -u http://enerjisa-admin:pwd@localhost:7054
+fabric-ca-client enroll -u http://enerjisa-admin:pwd@10.5.10.5:7054
 echo "enerjisa-admin Enrolled!"
 # Setup MSP 
 mkdir -p $FABRIC_CA_CLIENT_HOME/msp/admincerts
@@ -112,7 +132,7 @@ cp $FABRIC_CA_CLIENT_HOME/../../caserver/admin/msp/signcerts/*  $FABRIC_CA_CLIEN
 
 # Enroll the aydem-admin identity
 setenv aydem admin
-fabric-ca-client enroll -u http://aydem-admin:pwd@localhost:7054
+fabric-ca-client enroll -u http://aydem-admin:pwd@10.5.10.5:7054
 echo "aydem-admin Enrolled!"
 # Setup MSP 
 mkdir -p $FABRIC_CA_CLIENT_HOME/msp/admincerts
@@ -121,7 +141,7 @@ cp $FABRIC_CA_CLIENT_HOME/../../caserver/admin/msp/signcerts/*  $FABRIC_CA_CLIEN
 
 # Enroll the kamukurumu-admin identity
 setenv kamukurumu admin
-fabric-ca-client enroll -u http://kamukurumu-admin:pwd@localhost:7054
+fabric-ca-client enroll -u http://kamukurumu-admin:pwd@10.5.10.5:7054
 echo "kamukurumu-admin Enrolled!"
 # Setup MSP 
 mkdir -p $FABRIC_CA_CLIENT_HOME/msp/admincerts
@@ -174,11 +194,16 @@ fabric-ca-client register --id.type orderer --id.name orderer --id.secret pwd --
 echo "Orderer Register Completed with orderer"
 
 export FABRIC_CA_CLIENT_HOME=/hlf-enerji/fabric-ca/client/orderer/orderer
-echo http://orderer:pwd@localhost:7054
+echo http://orderer:pwd@10.5.10.5:7054
 echo $FABRIC_CA_CLIENT_HOME
-fabric-ca-client enroll -u http://orderer:pwd@localhost:7054
-echo "Orderer Enrolled on localhost:7054"
+fabric-ca-client enroll -u http://orderer:pwd@10.5.10.5:7054
+echo "Orderer Enrolled on 10.5.10.5:7054"
 mkdir -p $FABRIC_CA_CLIENT_HOME/msp/admincerts
 cp /hlf-enerji/fabric-ca/client/orderer/admin/msp/signcerts/* $FABRIC_CA_CLIENT_HOME/msp/admincerts
+
+echo "Peer Identities Generating and Enrolling"
+createId enerjisa enerjisa-peer1 
+createId aydem aydem-peer1 
+createId kamukurumu kamukurumu-peer1 
 
 read

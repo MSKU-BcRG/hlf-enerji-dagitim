@@ -1,7 +1,7 @@
 version: '2'
 
 services:
-   fabric_ca:
+   fabric-ca:
       container_name: fabric-ca
       image: hyperledger/fabric-ca:latest
       volumes:
@@ -9,6 +9,9 @@ services:
       command:
          - /hlf-enerji/gen-fabric-ca-docker.sh
       tty: true
+      networks:
+         hyperledger-bcrg:
+            ipv4_address: 10.5.10.5
    orderer-peer:
       container_name: orderer-peer
       image: hyperledger/fabric-orderer:latest
@@ -17,4 +20,48 @@ services:
       command:
          - /hlf-enerji/start-orderer-docker.sh
       tty: true
-      
+      depends_on:
+         - fabric-ca
+      networks:
+         hyperledger-bcrg:
+            ipv4_address: 10.5.10.10
+   fabric-configtxgen:
+      container_name: fabric-configtxgen
+      image: hyperledger/fabric-tools:latest
+      volumes:
+         - "./hlf-enerji/:/hlf-enerji"
+      command:
+         - /hlf-enerji/reGenerateConfigTx.sh
+   enerjisa-peer:
+      container_name: enerjisa-peer
+      image: hyperledger/fabric-peer:latest
+      volumes:
+         - "./hlf-enerji/:/hlf-enerji"
+      command:
+         - /hlf-enerji/start-enerjisa-peer-docker.sh
+      tty: true
+      depends_on:
+         - orderer-peer
+      networks:
+         hyperledger-bcrg:
+            ipv4_address: 10.5.10.30
+   aydem-peer:
+      container_name: aydem-peer
+      image: hyperledger/fabric-peer:latest
+      volumes:
+         - "./hlf-enerji/:/hlf-enerji"
+      command:
+         - /hlf-enerji/start-aydem-peer-docker.sh
+      tty: true
+      depends_on:
+         - orderer-peer
+      networks:
+         hyperledger-bcrg:
+            ipv4_address: 10.5.10.60
+networks:
+  hyperledger-bcrg:
+    driver: bridge
+    ipam:
+     config:
+       - subnet: 10.5.10.0/24
+         gateway: 10.5.10.1
