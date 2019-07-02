@@ -58,6 +58,20 @@ services:
       networks:
          hyperledger-bcrg:
             ipv4_address: 10.5.10.60
+   kamukurumu-peer:
+      container_name: kamukurumu-peer
+      image: hyperledger/fabric-peer:latest
+      volumes:
+         - "./hlf-enerji/:/hlf-enerji"
+      command:
+         - /hlf-enerji/start-kamukurumu-peer-docker.sh
+      tty: true
+      depends_on:
+         - enerjisa-peer
+         - aydem-peer
+      networks:
+         hyperledger-bcrg:
+            ipv4_address: 10.5.10.90
 networks:
   hyperledger-bcrg:
     driver: bridge

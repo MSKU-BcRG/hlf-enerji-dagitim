@@ -1,3 +1,6 @@
 fabric-ca/*
+artifacts/*
 *.log
 blockchain/*
+*.tx
+*.block
