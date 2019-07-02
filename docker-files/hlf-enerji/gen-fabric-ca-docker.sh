@@ -2,8 +2,8 @@
 
 #Setting Client and Server Path for Users
 setenv(){
-    export FABRIC_CA_CLIENT_HOME=/fabric-ca-server/fabric-ca/client/$1/$2
-    export FABRIC_CA_SERVER_HOME=/fabric-ca-server/fabric-ca/server/$1/$2
+    export FABRIC_CA_CLIENT_HOME=/hlf-enerji/fabric-ca/client/$1/$2
+    export FABRIC_CA_SERVER_HOME=/hlf-enerji/fabric-ca/server/$1/$2
 }
 
 killall fabric-ca-server  2> /dev/null
@@ -13,18 +13,18 @@ killall fabric-ca-server  2> /dev/null
 #   CA Admin Identity Creating
 
 # Creating a new folder
-mkdir -p /fabric-ca-server/fabric-ca
+mkdir -p /hlf-enerji/fabric-ca
 # FABRIC_CA_CLIENT_HOME
-export FABRIC_CA_CLIENT_HOME=/fabric-ca-server/fabric-ca/client  
+export FABRIC_CA_CLIENT_HOME=/hlf-enerji/fabric-ca/client  
 # FABRIC_CA_SERVER_HOME
-export FABRIC_CA_SERVER_HOME=/fabric-ca-server/fabric-ca/server
+export FABRIC_CA_SERVER_HOME=/hlf-enerji/fabric-ca/server
 mkdir -p $FABRIC_CA_SERVER_HOME
 #Initializing the CA Server
 fabric-ca-server init -b admin:pwd -n ca.localhost.com
 # Config Path -- Maybe Later
-DEFAULT_CLIENT_CONFIG_YAML=/fabric-ca-server/config/fabric-ca-server-config.yaml
+DEFAULT_CLIENT_CONFIG_YAML=/hlf-enerji/config/fabric-ca-server-config.yaml
 # Set Path for Client
-cp $DEFAULT_CLIENT_CONFIG_YAML  "/fabric-ca-server/fabric-ca/server/"
+cp $DEFAULT_CLIENT_CONFIG_YAML  "/hlf-enerji/fabric-ca/server/"
 
 #----------------------------------------------------------
 #                   Fabric CA Server
@@ -34,8 +34,8 @@ cp $DEFAULT_CLIENT_CONFIG_YAML  "/fabric-ca-server/fabric-ca/server/"
 echo 'Launching network on ca.server.com'
 
 # # Set the location
-# export FABRIC_CA_SERVER_HOME=/fabric-ca-server/fabric-ca/server
-# export FABRIC_CA_CLIENT_HOME=/fabric-ca-server/fabric-ca/client
+# export FABRIC_CA_SERVER_HOME=/hlf-enerji/fabric-ca/server
+# export FABRIC_CA_CLIENT_HOME=/hlf-enerji/fabric-ca/client
 
 # Launch network
 fabric-ca-server -n ca.server.com -p 7054 start &
@@ -47,10 +47,10 @@ sleep 5
 #----------------------------------------------------------
 #   Enroll CA Admin Identity
 
-DEFAULT_CLIENT_CONFIG_YAML=/fabric-ca-server/config/fabric-ca-client-config.yaml
+DEFAULT_CLIENT_CONFIG_YAML=/hlf-enerji/config/fabric-ca-client-config.yaml
 
 # Set Path for Client
-export FABRIC_CA_CLIENT_HOME=/fabric-ca-server/fabric-ca/client/caserver/admin
+export FABRIC_CA_CLIENT_HOME=/hlf-enerji/fabric-ca/client/caserver/admin
 # new folder for admin
 mkdir -p $FABRIC_CA_CLIENT_HOME
 cp $DEFAULT_CLIENT_CONFIG_YAML  "$FABRIC_CA_CLIENT_HOME/"
@@ -132,8 +132,8 @@ cp $FABRIC_CA_CLIENT_HOME/../../caserver/admin/msp/signcerts/*  $FABRIC_CA_CLIEN
 #                   Fabric CA Server
 #----------------------------------------------------------
 #   Installing Admin MSPs
-export FABRIC_CA_SERVER_HOME=/fabric-ca-server/fabric-ca/server
-export FABRIC_CA_CLIENT_HOME=/fabric-ca-server/fabric-ca/client
+export FABRIC_CA_SERVER_HOME=/hlf-enerji/fabric-ca/server
+export FABRIC_CA_CLIENT_HOME=/hlf-enerji/fabric-ca/client
 
 ROOT_CA=$FABRIC_CA_SERVER_HOME/ca-cert.pem
 
@@ -173,12 +173,12 @@ echo "Orderer Register Starting..."
 fabric-ca-client register --id.type orderer --id.name orderer --id.secret pwd --id.affiliation orderer
 echo "Orderer Register Completed with orderer"
 
-export FABRIC_CA_CLIENT_HOME=/fabric-ca-server/fabric-ca/client/orderer/orderer
+export FABRIC_CA_CLIENT_HOME=/hlf-enerji/fabric-ca/client/orderer/orderer
 echo http://orderer:pwd@localhost:7054
 echo $FABRIC_CA_CLIENT_HOME
 fabric-ca-client enroll -u http://orderer:pwd@localhost:7054
 echo "Orderer Enrolled on localhost:7054"
 mkdir -p $FABRIC_CA_CLIENT_HOME/msp/admincerts
-cp /fabric-ca-server/fabric-ca/client/orderer/admin/msp/signcerts/* $FABRIC_CA_CLIENT_HOME/msp/admincerts
+cp /hlf-enerji/fabric-ca/client/orderer/admin/msp/signcerts/* $FABRIC_CA_CLIENT_HOME/msp/admincerts
 
 read

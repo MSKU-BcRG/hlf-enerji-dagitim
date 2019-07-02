@@ -1,0 +1,107 @@
+################################################################################
+#
+#   Orderer Configuration
+#
+################################################################################
+General:
+
+    # Genesis Block Method = file then GenesisFile need to be specified 
+    # The genesis block file need to be generated using the configtxgen tool
+    GenesisMethod: file
+    GenesisFile: ./../artifacts/energy-genesis.block
+
+
+    # Ledger Type can be ram, json or file
+    LedgerType: file
+
+    # BCCSP Setup
+    BCCSP:
+        # Setup to use the Software CSP
+        Default: SW
+        SW:
+            HASH: SHA2
+            Security: 256
+            # Using the default 'LocalMSPDir/keystore'
+            FileKeyStore:
+                Keystore:
+
+    # Directory for the private crypto material needed by the
+    # orderer. 
+    LocalMSPDir: ../fabric-ca/client/orderer/orderer/msp
+
+    # Identity to register the local MSP material with the MSP
+    LocalMSPID: OrdererMSP
+
+    # Listen address: The IP on which to bind to listen.
+    ListenAddress: 0.0.0.0
+
+    # Listen port: The port on which to bind to listen.
+    ListenPort: 7050
+
+    # Keepalive settings for the GRPC server.
+    Keepalive:
+        # Disconnect the client if the time between pings is less than the specified time
+        ServerMinInterval: 60s
+        # Server pings the clients on open connection with the specified time between pings
+        ServerInterval: 7200s
+        # Server expects the clients to respond to pings. Server disconnets if response not receieved within timeout
+        ServerTimeout: 20s
+
+    # TLS: TLS settings for the GRPC server.
+    TLS:
+        Enabled: false
+        PrivateKey: ./server.key
+        Certificate: ./server.crt
+        RootCAs:
+          - ./ca.crt
+        ClientAuthRequired: false
+        ClientRootCAs:
+
+
+
+    # Log Level: The level at which to log. This accepts logging specifications
+    # per: fabric/docs/Setup/logging-control.md
+    # LogLevel: info
+
+    # Log Format:  The format string to use when logging.  Especially useful to disable color logging
+    # LogFormat: '%{color}%{time:2006-01-02 15:04:05.000 MST} [%{module}] %{shortfunc} -> %{level:.4s} %{id:03x}%{color:reset} %{message}'
+
+
+
+
+
+
+################################################################################
+#
+#   SECTION: File Ledger
+#   - This section applies to the configuration of the file or json ledgers.
+################################################################################
+FileLedger:
+
+    # Location: The directory to store the blocks in.
+    # Windows - if you get a LevelDb error in launching orderer use the VM file 
+    # by uncommenting the following line - comment the Location: ./ledger 
+    Location: ./blockchain/ledger
+    # Location: ./ledger
+
+    # The prefix to use when generating a ledger directory in temporary space.
+    Prefix: hyperledger-fabric-ordererledger    
+
+
+
+################################################################################
+#
+#   Debug Configuration
+#
+#   - This controls the debugging options for the orderer
+#
+################################################################################
+Debug:
+
+    # BroadcastTraceDir when set will cause each request to the Broadcast service
+    # for this orderer to be written to a file in this directory
+    BroadcastTraceDir: ./trace
+
+    # DeliverTraceDir when set will cause each request to the Deliver service
+    # for this orderer to be written to a file in this directory
+    DeliverTraceDir: ./trace

@@ -5,8 +5,16 @@ services:
       container_name: fabric-ca
       image: hyperledger/fabric-ca:latest
       volumes:
-         - "./fabric-ca-server/:/fabric-ca-server"
+         - "./hlf-enerji/:/hlf-enerji"
       command:
-         - /fabric-ca-server/gen-fabric-ca-docker.sh
+         - /hlf-enerji/gen-fabric-ca-docker.sh
       tty: true
-
+   orderer-peer:
+      container_name: orderer-peer
+      image: hyperledger/fabric-orderer:latest
+      volumes:
+         - "./hlf-enerji/:/hlf-enerji"
+      command:
+         - /hlf-enerji/start-orderer-docker.sh
+      tty: true
+      
